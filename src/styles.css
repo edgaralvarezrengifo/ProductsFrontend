@@ -1,0 +1,95 @@
+* {
+    font-family: sans-serif,Helvetica, Arial;
+   
+  }
+  
+  body {
+    padding: 60px;
+  }
+  
+  input {
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid rgb(97, 32, 158);
+    color: black;
+    font-size: 1.2rem;
+   
+    padding: 10px 15px;
+    width: 97%;
+  }
+
+  textarea{
+    width: 97%;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid rgb(97, 32, 158);
+    color: black;
+    margin-left: 10px;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 3rem;
+    margin-bottom: 5px;
+  }
+
+  .styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879 !important;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
+button{
+    background-color: #009879 !important;
+    color: #ffffff;
+    padding: 6px;
+    font-size: 1.3rem;
+    
+    font-family: sans-serif;
+    border: 1px solid #dddddd;
+
+}
+
+.column
+{
+    float: left;
+    width: 31%;
+    padding: 1%;
+    
+}
+  
+ 
