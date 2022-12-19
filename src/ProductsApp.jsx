@@ -1,30 +1,49 @@
 import React from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { AddProducts } from "./components/AddProduct";
 import { ProductsList } from "./components/PorductList";
+import { useQuery } from '@apollo/client';
+import { GET_Products } from "./Api/queries";
+
+
+
+
 export const ProductsApp = () =>{
 
-    const [products, setProducts] = useState([{ 'id':'PRODA','title':'PRODUCTO A','description':'PRODUCTO A','price':1000,'image':'','quantity':20 }]);
+    const [products, setProducts] = useState([]);
     const [isAdd, setisAdd] = useState(false);
+
+    const { loading, error, data } = useQuery(GET_Products);
+    console.log(data);
+
+   
+
     const handledAddProduct = (event) =>{
       setisAdd(!isAdd);
     }
+    const onAddProduct = (newProduct) =>{
+      {/*falta hacer la validación de los id sean únicos video 80*/ }
+      setProducts(prod => [...prod,newProduct])
+    }
+
+  
 
     return(
         <>
-        {/* titulo*/ }
-        <h1>Products</h1>
+   
+        <h1>Product List</h1>
+        {loading ? 
+        
+        <div>carganfo</div> :
+       <ProductsList products={data.products}/>
+      
+      }
 
-        {/*Add Product*/}
-        <div>
+       <div>
         <button onClick={handledAddProduct }>Add</button>
-        </div>
+       </div>
 
-         {isAdd&&<AddProducts  setProducts={setProducts}/>}    
-
-        {/*Lista de productos*/}
-
-       <ProductsList products={products}/>
+      {isAdd&&<AddProducts onNewProduct={onAddProduct}/>} 
 
         </>
     )
