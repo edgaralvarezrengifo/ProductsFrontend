@@ -8,3 +8,15 @@ export const addProduct = gql`
     }
   }
 `;
+
+export const deleteProduct = gql`
+  mutation deleteProduct($type: String) {
+    deleteProduct(id: $type) 
+  }
+`;
+
+export const updateProduct = gql`
+  mutation updateProduct($product: ProductInputType,$id: String) {
+    deleteProduct(product:$product,id: $type) 
+  }
+`;

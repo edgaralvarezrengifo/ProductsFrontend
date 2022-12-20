@@ -5,6 +5,8 @@ import './styles.css';
 import { ApolloClient, HttpLink,InMemoryCache, ApolloProvider } from '@apollo/client';
 
 
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import 'bootstrap/dist/css/bootstrap.css';
 

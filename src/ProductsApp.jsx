@@ -4,21 +4,26 @@ import { AddProducts } from "./components/AddProduct";
 import { ProductsList } from "./components/PorductList";
 import { useQuery } from '@apollo/client';
 import { GET_Products } from "./Api/queries";
-
-
-
-
+import Button from 'react-bootstrap/Button';
+import { ToastContainer, toast } from 'react-toastify';
 export const ProductsApp = () =>{
-
+    const [updateProduct, setupdateProduct] = useState(undefined);
     const [products, setProducts] = useState([]);
     const [isAdd, setisAdd] = useState(false);
+
+    const notify = (message) => toast.success(message);
 
     const { loading, error, data } = useQuery(GET_Products);
     console.log(data);
 
-   
+    useEffect(()=>{
+      if(loading === false && data){
+        setProducts(data.products);
+      }
+    },[loading, data]);
 
     const handledAddProduct = (event) =>{
+      
       setisAdd(!isAdd);
     }
     const onAddProduct = (newProduct) =>{
@@ -26,24 +31,25 @@ export const ProductsApp = () =>{
       setProducts(prod => [...prod,newProduct])
     }
 
-  
-
     return(
         <>
    
         <h1>Product List</h1>
         {loading ? 
         
-        <div>carganfo</div> :
-       <ProductsList products={data.products}/>
+        <div>Loading products</div> :
+        products !==undefined &&<ProductsList products={products} setProducts={(products)=>setProducts(products)}  
+                                              setupdateProduct={(p)=>{setupdateProduct(p)}} notify={notify}/>
       
       }
 
        <div>
-        <button onClick={handledAddProduct }>Add</button>
+       {!isAdd&&<Button variant="outline-success" onClick={handledAddProduct }>Add Product</Button>}
+        {isAdd&& <Button variant="outline-danger" onClick={handledAddProduct }>Cancel</Button>}
        </div>
 
-      {isAdd&&<AddProducts onNewProduct={onAddProduct}/>} 
+      {isAdd&&<AddProducts onNewProduct={onAddProduct}  setupdateProduct={setupdateProduct} notify={notify}/>} 
+      <ToastContainer />
 
         </>
     )
