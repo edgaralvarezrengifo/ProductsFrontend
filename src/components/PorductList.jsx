@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import { deleteProduct } from "../Api/mutations";
 import { useMutation } from '@apollo/client';
 
-export const ProductsList = ({products,setProducts,notify,setupdateProduct}) =>{
+export const ProductsList = ({products,setProducts,notify,setupdateProduct,setisAdd}) =>{
     const [show, setShow] = useState(false);
     const[cindex,setCindex] = useState(-1);
     const [deleteProd, { data, loading, error }] = useMutation(deleteProduct);
@@ -28,6 +28,8 @@ export const ProductsList = ({products,setProducts,notify,setupdateProduct}) =>{
         const prod = products[i];
         setupdateProduct(prod);
         console.log(prod);
+        setisAdd(true);
+
     };
     const handleShow = (event,i) => {
         console.log(i);

@@ -19,12 +19,16 @@ export const ProductsApp = () =>{
     useEffect(()=>{
       if(loading === false && data){
         setProducts(data.products);
+ 
       }
-    },[loading, data]);
+    },[loading, data,updateProduct]);
 
     const handledAddProduct = (event) =>{
       
       setisAdd(!isAdd);
+      if(!isAdd){
+        setupdateProduct(undefined);
+      }
     }
     const onAddProduct = (newProduct) =>{
       {/*falta hacer la validación de los id sean únicos video 80*/ }
@@ -39,7 +43,8 @@ export const ProductsApp = () =>{
         
         <div>Loading products</div> :
         products !==undefined &&<ProductsList products={products} setProducts={(products)=>setProducts(products)}  
-                                              setupdateProduct={(p)=>{setupdateProduct(p)}} notify={notify}/>
+                                              setupdateProduct={(p)=>{setupdateProduct(p)}} 
+                                              setisAdd={(a)=>{setisAdd(a)}} notify={notify}/>
       
       }
 
@@ -48,7 +53,8 @@ export const ProductsApp = () =>{
         {isAdd&& <Button variant="outline-danger" onClick={handledAddProduct }>Cancel</Button>}
        </div>
 
-      {isAdd&&<AddProducts onNewProduct={onAddProduct}  setupdateProduct={setupdateProduct} notify={notify}/>} 
+      {isAdd&&<AddProducts onNewProduct={onAddProduct}  updateProduct={updateProduct}
+                          notify={notify}/>} 
       <ToastContainer />
 
         </>
