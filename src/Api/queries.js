@@ -14,14 +14,15 @@ query{
   }
 `;
 
-export const GET_Product = (id)=> {gql`
-query(){
-  product(id:${id}){
-    id
-    title
-    price
-    description
+export const GET_Product = gql`
+query product($id: String){
+  product(id:$id){
+    id,
+    title,
+    description,
+    price,  
+    image,
     quantity
-    image
   }
-`};
+}
+`;

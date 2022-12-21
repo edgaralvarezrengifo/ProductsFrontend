@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import { deleteProduct } from "../Api/mutations";
 import { useMutation } from '@apollo/client';
 
-export const ProductsList = ({products,setProducts,notify,setupdateProduct,setisAdd}) =>{
+export const ProductsList = ({products,setProducts,setProdId,notify,setupdateProduct,setisAdd, setformTitle}) =>{
     const [show, setShow] = useState(false);
     const[cindex,setCindex] = useState(-1);
     const [deleteProd, { data, loading, error }] = useMutation(deleteProduct);
@@ -27,7 +27,16 @@ export const ProductsList = ({products,setProducts,notify,setupdateProduct,setis
     const handledUpdateProduct=(event,i)=>{
         const prod = products[i];
         setupdateProduct(prod);
+        setformTitle(`Update Product ${prod.id}`)
         console.log(prod);
+        setisAdd(true);
+        setProdId('-1');
+
+    };
+    const handledViewProduct=(event,i)=>{
+        const prod = products[i];
+        setProdId(prod.id);
+        setformTitle(`Product ${prod.id}`)
         setisAdd(true);
 
     };
@@ -64,9 +73,11 @@ export const ProductsList = ({products,setProducts,notify,setupdateProduct,setis
                                     {value}
                                 </td>)} 
                         })}
-                        <td key={`Actions ${index}`}>
-                            <Button size="sm" variant="outline-danger" onClick={(event)=>handleShow(event, index)}>delete</Button>
-                            <Button size="sm" variant="outline-success" onClick={(event)=>handledUpdateProduct(event,index)}>update</Button></td>
+                            <td key={`Actions ${index}`}>
+                                <Button size="sm" variant="outline-info" onClick={(event)=>handledViewProduct(event,index)}>View</Button>    
+                                <Button size="sm" variant="outline-success" onClick={(event)=>handledUpdateProduct(event,index)}>update</Button>
+                                <Button size="sm" variant="outline-danger" onClick={(event)=>handleShow(event, index)}>delete</Button>
+                            </td>
                         </tr>)
                         })}
                     
