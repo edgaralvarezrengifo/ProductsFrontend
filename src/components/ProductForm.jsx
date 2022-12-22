@@ -5,13 +5,16 @@ import { useMutation,useQuery } from '@apollo/client';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import { uploadFileToAWS } from "./HandleImages";
 
 
 export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedProduct,Title}) =>{
     const [product, setProduct] = useState({'id':'','title':'','description':'','price':0,'image':'','quantity':0 });
     const [createProd, { data, loading, error }] = useMutation(addProduct);
     const [updateProd, { dataupdate, loadingupdate, errorupdate }] = useMutation(updateProduct);
-   
+    const [progress , setProgress] = useState(0);
+    const [selectedFile, setSelectedFile] = useState(null);
+
     useEffect(()=>{
     
         if(updatedProduct!==undefined){   
@@ -28,24 +31,50 @@ export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedP
     if (error) return `Submission error! ${error.message}`;
     const  handledOnChangeEvent= (event)=>{
         const value = event.target.name==="price" || event.target.name==="quantity" ? +event.target.value : event.target.value  ;
-        setProduct({...product,[event.target.name]: value});        
-        console.log(product)
+        setProduct({...product,[event.target.name]: value});    
+        if(event.target.files[0]!==null){ 
+            console.log('entra a setear la imagen')       
+            setSelectedFile(event.target.files[0]);
+        }
+    }
+    function delay(milliseconds){
+        return new Promise(resolve => {
+            setTimeout(resolve, milliseconds);
+        });
     }
 
-    const onSubmit = (event)=>{
+    const onSubmit =async (event)=>{
         console.log(product);
         event.preventDefault();
         if(updatedProduct===undefined){
-            onNewProduct(product);
-            createProd({ variables: { type:product } });      
+         
+            let copy = {...product}
+            onNewProduct(copy);
+            copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
+            console.log(copy);
+            createProd({ variables: { type:copy } });      
             notify("Product created successfully");
+            if(selectedFile!==null){
+
+                uploadFileToAWS(selectedFile);
+                await delay(2000);
+            }
+            setSelectedFile(null);
+          
         }else{
-            onUpdateProduct(product);
-            updateProd({variables : {type:product,id:product.id}});
+            let copy = {...product}
+            if(selectedFile!==null){
+                copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
+                uploadFileToAWS(selectedFile);
+            }
+           
+            updateProd({variables : {type:copy,id:product.id}});
+            onUpdateProduct(copy);
             notify("Product updated successfully");
            
         }
         setProduct({'id':'','title':'','description':'','price':0,'image':'','quantity':0 });
+
        
     }
     
@@ -72,16 +101,26 @@ export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedP
                             
                         </Form.Group>
                     </Col>
+                    {prodId==='-1'&&
                     <Col>
                         <Form.Group controlId="formFile" className="mb-3">
                         <Form.Label> Image:</Form.Label>
-                            <Form.Control type="file" name="image" value={product.image}
+                            <Form.Control type="file" name="image" 
                             disabled={prodId!=='-1'} onChange={handledOnChangeEvent}/>
                     
                     </Form.Group>
                     
                     </Col>
+                    }
+                    {prodId!=='-1'&&
+                    <Col>
+                        <Form.Group controlId="formFile" className="mb-3">
+                        <img src= {product.image}  width="200" height="100"></img>
                     
+                    </Form.Group>
+                    
+                    </Col>
+                    }
                 </Row>
                 <Row>
                     <Col>

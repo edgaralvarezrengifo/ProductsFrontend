@@ -21,6 +21,7 @@ export const ProductsApp = () =>{
     useEffect(()=>{
       if(loading === false && data){
         setProducts(data.products);
+        console.log(data.products);
  
       }
     },[loading, data]);

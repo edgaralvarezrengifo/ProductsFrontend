@@ -25,6 +25,7 @@ export const ProductsList = ({products,setProducts,setProdId,notify,setupdatePro
 
     }
     const handledUpdateProduct=(event,i)=>{
+        setisAdd(false);
         const prod = products[i];
         setupdateProduct(prod);
         setformTitle(`Update Product ${prod.id}`)
@@ -66,12 +67,17 @@ export const ProductsList = ({products,setProducts,setProdId,notify,setupdatePro
 
                         <tr key={index}> 
                         {
-                        Object.values(product).map((value,index) => {
-                            {if(value!='ProductType')
+                        Object.keys(product).map((key,index) => {
+                            {if(key!=='__typename' && key!=='image')
                                 return (
                                 <td key={index}>
-                                    {value}
-                                </td>)} 
+                                    {product[key]}
+                                </td>)}
+                            {if(key ==='image')
+                            return (
+                            <td key={index}>
+                                {product[key]&&<img src= {product[key]}  width="50" height="50"></img>}
+                            </td>)} 
                         })}
                             <td key={`Actions ${index}`}>
                                 <Button size="sm" variant="outline-info" onClick={(event)=>handledViewProduct(event,index)}>View</Button>    
