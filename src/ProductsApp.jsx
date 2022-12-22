@@ -6,12 +6,15 @@ import { useQuery } from '@apollo/client';
 import { GET_Products } from "./Api/queries";
 import Button from 'react-bootstrap/Button';
 import { ToastContainer, toast } from 'react-toastify';
+import {Pagination} from './components/Pagination';
 export const ProductsApp = () =>{
     const [updateProduct, setupdateProduct] = useState(undefined);
     const [products, setProducts] = useState([]);
     const [isAdd, setisAdd] = useState(false);
     const [formTitle, setformTitle] = useState(undefined);
     const [prodId,setProdId] = useState('-1');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [recordsPerPage] = useState(10);
 
     const notify = (message) => toast.success(message);
 
@@ -25,6 +28,12 @@ export const ProductsApp = () =>{
  
       }
     },[loading, data]);
+
+    const indexOfLastRecord = currentPage * recordsPerPage;
+    const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+    const currentRecords = products.slice(indexOfFirstRecord, indexOfLastRecord);
+    const nPages = Math.ceil(products.length / recordsPerPage)
+
 
     const handledAddProductCancel = (event) =>{
       setisAdd(false);
@@ -62,10 +71,18 @@ export const ProductsApp = () =>{
         {loading ? 
         
         <div>Loading products</div> :
-        products !==undefined &&<ProductsList products={products} setProducts={(products)=>setProducts(products)}  
+        products !==undefined &&
+        <>
+                <ProductsList products={currentRecords} setProducts={(products)=>setProducts(products)}  
                                               setupdateProduct={(p)=>{setupdateProduct(p)}} setProdId={setProdId}
                                               setisAdd={(a)=>{setisAdd(a)}}  setformTitle={(t)=>{setformTitle(t)}}
                                               notify={notify}/>
+                {products.length!==0 &&<Pagination
+                nPages={nPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}/>}
+         
+            </>
       
       }
 

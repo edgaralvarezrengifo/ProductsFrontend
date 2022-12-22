@@ -32,9 +32,13 @@ export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedP
     const  handledOnChangeEvent= (event)=>{
         const value = event.target.name==="price" || event.target.name==="quantity" ? +event.target.value : event.target.value  ;
         setProduct({...product,[event.target.name]: value});    
-        if(event.target.files[0]!==null){ 
-            console.log('entra a setear la imagen')       
-            setSelectedFile(event.target.files[0]);
+        if(event.target.files!==undefined  &&  event.target.files!==null ){ 
+            console.log(event);
+            if(event.target.files[0]!==null){
+                console.log('entra a setear la imagen')       
+                setSelectedFile(event.target.files[0]);
+            }
+           
         }
     }
     function delay(milliseconds){
@@ -50,12 +54,12 @@ export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedP
          
             let copy = {...product}
             onNewProduct(copy);
-            copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
+            
             console.log(copy);
             createProd({ variables: { type:copy } });      
             notify("Product created successfully");
             if(selectedFile!==null){
-
+                copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
                 uploadFileToAWS(selectedFile);
                 await delay(2000);
             }
