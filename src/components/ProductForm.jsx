@@ -11,7 +11,9 @@ import { uploadFileToAWS } from "./HandleImages";
 export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedProduct,Title}) =>{
     const [product, setProduct] = useState({'id':'','title':'','description':'','price':0,'image':'','quantity':0 });
     const [createProd, { data, loading, error }] = useMutation(addProduct);
-    const [updateProd, { dataupdate, loadingupdate, errorupdate }] = useMutation(updateProduct);
+    const [updateProd, { dataupdate, loadingupdate, errorupdate }] = useMutation(updateProduct,{ onError: (err) => {
+        notify(`Error ${err}`);
+    }});
     const [progress , setProgress] = useState(0);
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -35,7 +37,7 @@ export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedP
         if(event.target.files!==undefined  &&  event.target.files!==null ){ 
             console.log(event);
             if(event.target.files[0]!==null){
-                console.log('entra a setear la imagen')       
+               
                 setSelectedFile(event.target.files[0]);
             }
            
@@ -50,31 +52,49 @@ export const ProductForm = ({onNewProduct,onUpdateProduct,prodId,notify,updatedP
     const onSubmit =async (event)=>{
         console.log(product);
         event.preventDefault();
-        if(updatedProduct===undefined){
-         
-            let copy = {...product}
-            onNewProduct(copy);
-            
+        if(updatedProduct===undefined){    
+            try{
+                let copy = {...product}           
             console.log(copy);
-            createProd({ variables: { type:copy } });      
-            notify("Product created successfully");
+         
+           
+            
             if(selectedFile!==null){
                 copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
+                await createProd({ variables: { type:copy } });
                 uploadFileToAWS(selectedFile);
-                await delay(2000);
+                await delay(1000);
+               
+            }
+            else{
+                await createProd({ variables: { type:copy } });
             }
             setSelectedFile(null);
+            onNewProduct(copy);
+          
+            notify("Product created successfully");
+            }catch(err) {
+                notify(`Error ${err}`);
+                console.log(err);
+              }   
+            
+                 
           
         }else{
             let copy = {...product}
-            if(selectedFile!==null){
-                copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
-                uploadFileToAWS(selectedFile);
-            }
-           
             updateProd({variables : {type:copy,id:product.id}});
-            onUpdateProduct(copy);
-            notify("Product updated successfully");
+            if(!errorupdate){
+                if(selectedFile!==null){
+                    copy.image=`https://buckettrainning.s3.amazonaws.com/images/${selectedFile.name}`;
+                    uploadFileToAWS(selectedFile);
+                    await delay(1000);
+                }
+               
+               
+                onUpdateProduct(copy);
+                notify("Product updated successfully");
+            }
+            
            
         }
         setProduct({'id':'','title':'','description':'','price':0,'image':'','quantity':0 });

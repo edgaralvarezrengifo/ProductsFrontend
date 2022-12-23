@@ -11,6 +11,8 @@ export const ProductsList = ({products,setProducts,setProdId,notify,setupdatePro
 
     const handleClose = () => setShow(false);
     const handleCloseConfirm = ()=>{
+        setisAdd(false);
+        setProdId('-1');
         const prod = products[cindex]
         const prodid = products[cindex].id;
         console.log(prodid);
